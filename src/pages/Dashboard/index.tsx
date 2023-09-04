@@ -1,3 +1,7 @@
+import { useAuth } from "../../auth/AuthProvider";
+
 export function DashboardPage() {
-	return <div>DashboardPage</div>;
+    const auth = useAuth();
+
+    return <div>Dashboard de {auth.getUserName()?.name}</div>;
 }
