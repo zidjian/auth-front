@@ -26,12 +26,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     async function getUserInfo(token: string) {
         try {
             const response = await fetch(`${API_URL}/user`, {
-                method: "POST",
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
             });
+            console.log(response);
 
             if (response.ok) {
                 const json = await response.json();
@@ -56,7 +57,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
             if (token) {
                 const newAccessToken = await requestNewAccessToken(token);
                 if (newAccessToken) {
-                    const userInfo = await getUserInfo(newAccessToken);
+                    const userInfo = await getUserInfo(
+                        newAccessToken.accessToken
+                    );
                     if (userInfo) {
                         saveSesionInfo(userInfo, newAccessToken, token);
                     }
@@ -86,8 +89,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 },
             });
 
-            console.log(await response);
-
             if (response.ok) {
                 const json = (await response.json()) as accessTokenResponse;
                 if (json.error) {
@@ -110,7 +111,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const tokenData = localStorage.getItem("token");
 
         if (tokenData) {
-            const token  = JSON.parse(tokenData);
+            const token = JSON.parse(tokenData);
 
             return token;
         }
